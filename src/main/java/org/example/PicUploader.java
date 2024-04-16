@@ -9,16 +9,14 @@ import org.openqa.selenium.chrome.ChromeDriver;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class PicUploader {
 
     public static void main(String[] args) throws Exception {
-        String picDirectory = "C:\\Users\\Jefferson Quintano\\Pictures\\Screenshots";
-        String driverPath = "C:\\Selenium\\Chrome\\chromedriver-win64\\chromedriver.exe";
+        String picDirectory = Utils.ssPath;
+        String driverPath = Utils.driverPath;
         FileRenamer.renameFilesByTime(picDirectory);
         File directory = new File(picDirectory);
         File[] filesInDirectory = directory.listFiles();
@@ -26,7 +24,7 @@ public class PicUploader {
         WebDriver driver = new ChromeDriver();
         Map<String, String> fileLinkMap = new LinkedHashMap<>();
 
-        driver.get("https://prnt.sc/");
+        driver.get(Utils.lightshotURL);
 //        driver.manage().window().maximize();
         if (filesInDirectory != null) {
             processFiles(driver, filesInDirectory, fileLinkMap);
@@ -120,7 +118,7 @@ public class PicUploader {
     }
 
     private static void writeOutputToFile(Workbook workbook) throws Exception {
-        FileOutputStream fileOutputStream = new FileOutputStream("output\\url_screenshot_map.xlsx");
+        FileOutputStream fileOutputStream = new FileOutputStream(Utils.outputPath);
         workbook.write(fileOutputStream);
         fileOutputStream.close();
         workbook.close();
