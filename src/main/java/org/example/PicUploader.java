@@ -13,14 +13,11 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class PicUploader {
-
     public static void main(String[] args) throws Exception {
-        String picDirectory = Utils.ssPath;
-        String driverPath = Utils.driverPath;
-        FileRenamer.renameFilesByTime(picDirectory);
-        File directory = new File(picDirectory);
+        FileRenamer.renameFilesByTime(Utils.ssPath);
+        File directory = new File(Utils.ssPath);
         File[] filesInDirectory = directory.listFiles();
-        System.setProperty("webdriver.chrome.driver", driverPath);
+        System.setProperty(Utils.propertySetup, Utils.driverPath);
         WebDriver driver = new ChromeDriver();
         Map<String, String> fileLinkMap = new LinkedHashMap<>();
 
@@ -30,7 +27,6 @@ public class PicUploader {
             processFiles(driver, filesInDirectory, fileLinkMap);
         }
         driver.quit();
-
         createExcelFile(fileLinkMap);
     }
 
@@ -42,15 +38,15 @@ public class PicUploader {
             }
             String fileName = pictureFile.getName().split("\\.")[0];
             String pictureFilePath = pictureFile.getAbsolutePath();
-            System.out.println("PATH: " + pictureFilePath);
+//            System.out.println("PATH: " + pictureFilePath);
             driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
             System.out.print("Processing " + i + "...");
 
 //            driver.findElement(By.xpath("/html/body/div[2]/div[1]/div[1]/form/input")).sendKeys(pictureFilePath);
-            driver.findElement(By.cssSelector("input.uploader-chooser__input.js-file-upload-input")).sendKeys(pictureFilePath);
+            driver.findElement(By.cssSelector(Utils.inputCss)).sendKeys(pictureFilePath);
 
-            Thread.sleep(9000);
-            WebElement element = driver.findElement(By.xpath("//*[@id=\"link-textbox\"]"));
+            Thread.sleep(Utils.sleepTime);
+            WebElement element = driver.findElement(By.xpath(Utils.hrefXpath));
             String hrefValue = element.getAttribute("href");
             fileLinkMap.put(fileName, hrefValue);
             System.out.println(hrefValue);
